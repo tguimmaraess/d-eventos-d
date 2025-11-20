@@ -9,16 +9,22 @@ import {
   Area,
   XAxis, 
   YAxis, 
-  CartesianGrid
+  CartesianGrid,
+  BarChart,
+  Bar
 } from 'recharts';
-import { REVENUE_DISTRIBUTION, SALES_PEAKS, TOP_EMPLOYEES, TOP_CLIENTS } from '../constants';
-import { UserCheck, UserPlus, TrendingUp, DollarSign, Receipt } from 'lucide-react';
+import { REVENUE_DISTRIBUTION, SALES_PEAKS, TOP_EMPLOYEES, TOP_CLIENTS, PRODUCT_STATS } from '../constants';
+import { UserCheck, UserPlus, TrendingUp, DollarSign, Receipt, ShoppingBag, BarChart3 } from 'lucide-react';
 
 const formatCurrency = (val: number) => 
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val);
 
 const DashboardView: React.FC = () => {
   const totalRevenue = REVENUE_DISTRIBUTION.reduce((acc, curr) => acc + curr.amount, 0);
+  
+  const topProductsByQty = [...PRODUCT_STATS]
+    .sort((a, b) => b.sold - a.sold)
+    .slice(0, 5);
 
   return (
     <div className="p-6 space-y-6 max-w-[1600px] mx-auto animate-in fade-in duration-500">
@@ -232,7 +238,7 @@ const DashboardView: React.FC = () => {
         </div>
       </div>
 
-      {/* Bottom Row: Tables */}
+      {/* Fourth Row: Tables */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Employee Performance */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
@@ -321,6 +327,118 @@ const DashboardView: React.FC = () => {
           )}
         </div>
       </div>
+
+      {/* Fifth Row: Products Chart */}
+      <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center gap-3">
+             <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+               <BarChart3 size={20} />
+             </div>
+             <div>
+               <h3 className="text-lg font-semibold text-slate-700">Volume de Vendas por Produto</h3>
+               <p className="text-sm text-slate-400">Top 5 itens mais vendidos (Quantidade)</p>
+             </div>
+          </div>
+        </div>
+        <div className="h-[300px] w-full">
+           <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={topProductsByQty} margin={{ top: 20, right: 30, left: 20, bottom: 5 }} barSize={60}>
+                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                 <XAxis 
+                    dataKey="name" 
+                    axisLine={false} 
+                    tickLine={false} 
+                    tick={{fill: '#64748b', fontSize: 12, fontWeight: 500}}
+                    tickFormatter={(value) => value.length > 20 ? value.substring(0, 20) + '...' : value}
+                    dy={10}
+                 />
+                 <YAxis axisLine={false} tickLine={false} tick={{fill: '#64748b', fontSize: 12}} />
+                 <Tooltip 
+                    cursor={{fill: '#f8fafc'}}
+                    contentStyle={{ backgroundColor: '#fff', borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                 />
+                 <Bar dataKey="sold" name="Quantidade Vendida" radius={[6, 6, 0, 0]}>
+                    {topProductsByQty.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={['#6366f1', '#8b5cf6', '#a855f7', '#d946ef', '#ec4899'][index % 5]} />
+                    ))}
+                 </Bar>
+              </BarChart>
+           </ResponsiveContainer>
+        </div>
+      </div>
+
+      {/* Sixth Row: Detailed Product Report Table */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
+          <div className="p-6 border-b border-slate-50 flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+                <ShoppingBag size={20} />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-slate-700">Relatório Detalhado de Produtos</h3>
+                <p className="text-sm text-slate-400">Tabela geral de itens (Quantidade e Valor Total)</p>
+              </div>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-slate-50/50 text-slate-500 font-semibold border-b border-slate-100">
+                <tr>
+                  <th className="px-6 py-4">Produto</th>
+                  <th className="px-6 py-4">Categoria</th>
+                  <th className="px-6 py-4 text-right">Preço Unit.</th>
+                  <th className="px-6 py-4 text-center">Qtd. Vendida</th>
+                  <th className="px-6 py-4 text-right">Valor Total</th>
+                  <th className="px-6 py-4 text-center">Status Estoque</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-50">
+                {PRODUCT_STATS.map((product) => (
+                  <tr key={product.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-slate-700">
+                      {product.name}
+                    </td>
+                    <td className="px-6 py-4 text-slate-500">
+                      <span className="px-2.5 py-1 rounded-full bg-gray-100 text-xs font-medium text-gray-600">
+                        {product.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right text-slate-600">
+                      {formatCurrency(product.price)}
+                    </td>
+                    <td className="px-6 py-4 text-center text-slate-700 font-semibold">
+                      {product.sold}
+                    </td>
+                    <td className="px-6 py-4 text-right font-bold text-indigo-600">
+                      {formatCurrency(product.revenue)}
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      {product.status === 'high' && (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 text-green-700 text-xs font-medium border border-green-100">
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500"></span>
+                          Em dia
+                        </span>
+                      )}
+                      {product.status === 'medium' && (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium border border-blue-100">
+                           <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                          Regular
+                        </span>
+                      )}
+                      {product.status === 'low' && (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-red-50 text-red-700 text-xs font-medium border border-red-100">
+                          <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                          Crítico ({product.stock})
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
     </div>
   );
 };

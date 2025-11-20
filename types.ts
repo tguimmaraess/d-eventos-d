@@ -35,3 +35,14 @@ export interface MenuItem {
   label: string;
   iconName: string;
 }
+
+export interface ProductStat {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  sold: number;
+  revenue: number;
+  stock: number;
+  status: 'high' | 'medium' | 'low';
+}

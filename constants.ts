@@ -1,4 +1,4 @@
-import { PaymentMethod, RevenueData, SalesPeakData, EmployeeMetric } from './types';
+import { PaymentMethod, RevenueData, SalesPeakData, EmployeeMetric, ProductStat } from './types';
 
 export const REVENUE_DISTRIBUTION: RevenueData[] = [
   { method: PaymentMethod.PIX, amount: 11914.66, color: '#fb923c' }, // Orange
@@ -32,4 +32,16 @@ export const TOP_CLIENTS = [
   { name: 'João Silva', spent: 1250.00 },
   { name: 'Maria Oliveira', spent: 980.50 },
   { name: 'Carlos Souza', spent: 850.00 },
+];
+
+export const PRODUCT_STATS: ProductStat[] = [
+  { id: '1', name: 'Cerveja Glacial 600ml', category: 'Cervejas', price: 9.00, sold: 1240, revenue: 11160.00, stock: 85, status: 'high' },
+  { id: '2', name: 'Cerveja Bavaria 600ml', category: 'Cervejas', price: 10.00, sold: 980, revenue: 9800.00, stock: 42, status: 'medium' },
+  { id: '3', name: 'Combo Vodka Absolut + 6 Redbull', category: 'Combos', price: 350.00, sold: 42, revenue: 14700.00, stock: 15, status: 'medium' },
+  { id: '4', name: 'Coca-Cola Lata 350ml', category: 'Não Alcoólicos', price: 6.00, sold: 850, revenue: 5100.00, stock: 120, status: 'high' },
+  { id: '5', name: 'Cerveja Heineken 330ml', category: 'Cervejas', price: 18.00, sold: 420, revenue: 7560.00, stock: 120, status: 'high' },
+  { id: '6', name: 'Água Mineral sem Gás', category: 'Não Alcoólicos', price: 5.00, sold: 340, revenue: 1700.00, stock: 45, status: 'medium' },
+  { id: '7', name: 'Whisky Red Label Dose', category: 'Destilados', price: 28.00, sold: 85, revenue: 2380.00, stock: 2, status: 'low' },
+  { id: '8', name: 'Energético Red Bull', category: 'Não Alcoólicos', price: 22.00, sold: 105, revenue: 2310.00, stock: 60, status: 'high' },
+  { id: '9', name: 'Combo Gin Beefeater', category: 'Combos', price: 380.00, sold: 12, revenue: 4560.00, stock: 10, status: 'medium' },
 ];
